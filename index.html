@@ -96,6 +96,19 @@
             viewer.cameraOrbit = "0deg 75deg 105m";
             viewer.fieldOfView = "30deg";
         }
+
+    const viewer = document.querySelector("model-viewer");
+
+    viewer.addEventListener("load", () => {
+      // Busca el material por su nombre
+      const materialAcero = viewer.model.materials.find(mat => mat.name === "Mat_Acero");
+  
+      if (materialAcero) {
+        // Aplica un nuevo color [Rojo, Verde, Azul, Opacidad]
+        // Ejemplo: Un tono metálico rojizo oscuro
+        materialAcero.pbrMetallicRoughness.setBaseColorFactor([0.5, 0.1, 0.1, 1]);
+      }
+    });
     </script>
 
 </body>
