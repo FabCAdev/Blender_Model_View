@@ -29,6 +29,8 @@
         }
         .controls { 
             display: flex; 
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 15px; 
             margin-top: 20px; 
         }
@@ -49,7 +51,7 @@
     <h1>Escudo Medieval PBR</h1>
     <p>Proyecto Personal Interactivo - Web Real-Time</p>
 
-    <!-- Visor 3D de Google (Asegúrate de que tu archivo se llame Escudo.glb o cámbiale el nombre aquí) -->
+    <!-- Visor 3D -->
     <model-viewer id="escudo" src="Escudo.glb" alt="Escudo Medieval 3D" 
         auto-rotate 
         camera-controls 
@@ -60,55 +62,51 @@
         skybox-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr">
     </model-viewer>
 
-    <!-- 3 Botones Interactivos (Requisito de la rúbrica) -->
+    <!-- 5 Botones Interactivos -->
     <div class="controls">
-        <button onclick="cambiarColorAcero()">Cambiar Color Acero</button>
+        <button onclick="cambiarColor('Mat_Madera')">Color Madera</button>
+        <button onclick="cambiarColor('Mat_Acero')">Color Acero</button>
+        <button onclick="cambiarColor('Mat_Umbral')">Color Umbral</button>
         <button onclick="alternarRotacion()">Alternar Rotación</button>
         <button onclick="resetearVista()">Reiniciar Vista</button>
     </div>
 
     <script>
+        // Declaramos la variable viewer UNA SOLA VEZ
         const viewer = document.querySelector('#escudo');
 
-        // Botón 1: Cambia el color base del material de acero dinámicamente
-        function cambiarColorAcero() {
-            // Nota: El índice [0] u otro depende de cómo se ordenaron los materiales al exportar
-            const material = viewer.model.materials[0]; 
+        // Función unificada: Recibe el nombre del material a cambiar
+        function cambiarColor(nombreMaterial) {
+            // Asegurarnos de que el modelo ya haya cargado antes de intentar cambiar el color
+            if (!viewer.model) {
+                alert("El modelo aún está cargando...");
+                return;
+            }
+
+            // Busca el material por su nombre exacto
+            const material = viewer.model.materials.find(mat => mat.name === nombreMaterial); 
+
             if (material) {
-                // Genera un color aleatorio para el acero/metal
+                // Genera un color aleatorio [R, G, B, Opacidad]
                 const r = Math.random();
                 const g = Math.random();
                 const b = Math.random();
                 material.pbrMetallicRoughness.setBaseColorFactor([r, g, b, 1.0]);
             } else {
-                alert("No se encontró el material de acero para modificar.");
+                alert("No se encontró el material: " + nombreMaterial);
             }
         }
 
-        // Botón 2: Activa o pausa la rotación automática correctamente
+        // Activa o pausa la rotación
         function alternarRotacion() {
-            // Alterna el atributo en la etiqueta HTML de model-viewer de forma directa
             viewer.toggleAttribute('auto-rotate');
-}
+        }
 
-        // Botón 3: Restablece la posición inicial de la cámara
+        // Restablece la cámara
         function resetearVista() {
             viewer.cameraOrbit = "0deg 75deg 105m";
             viewer.fieldOfView = "30deg";
         }
-
-    const viewer = document.querySelector("model-viewer");
-
-    viewer.addEventListener("load", () => {
-      // Busca el material por su nombre
-      const materialAcero = viewer.model.materials.find(mat => mat.name === "Mat_Acero");
-  
-      if (materialAcero) {
-        // Aplica un nuevo color [Rojo, Verde, Azul, Opacidad]
-        // Ejemplo: Un tono metálico rojizo oscuro
-        materialAcero.pbrMetallicRoughness.setBaseColorFactor([0.5, 0.1, 0.1, 1]);
-      }
-    });
     </script>
 
 </body>
